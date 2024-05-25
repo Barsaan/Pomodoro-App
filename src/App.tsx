@@ -1,26 +1,17 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import "./Pomo.scss";
+import PomodoroApp from "./Components/PomodoroApp/PomoDoroApp";
+import { useEffect } from "react";
+import "react-tooltip/dist/react-tooltip.css";
 
-function App() {
+const App = () => {
+  useEffect(() => {
+    document.title = " 25:00 - Time to focus!";
+  });
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <PomodoroApp />
     </div>
   );
-}
-
+};
 export default App;
+  

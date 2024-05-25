@@ -1,0 +1,282 @@
+body {
+  background-color: #1A1B24;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  display: flex;
+  justify-content: center;
+}
+
+.nav-contents {
+  display: flex;
+  border-bottom: 1px solid #2c2d36;
+  width: 729px;
+  padding: 10px;
+  gap: 269px;
+}
+
+.nav-logo-section a {
+  color: white;
+  font-size: 20px;
+  text-decoration: none;
+  margin-right: 109px;
+  font-weight: 500;
+}
+
+.nav-button-section button {
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0.9;
+  background: none rgba(255, 255, 255, 0.2);
+  box-shadow: none;
+  margin-left: 10px;
+  font-size: 13px;
+  padding: 8px 12px;
+  min-width: 70px;
+  border: none;
+  color: white
+}
+
+.nav-logo-section {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 8px;
+
+}
+
+.pomodoro-app {
+  padding: 20px 0px 30px;
+  margin-top: 30px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.tab-container {
+  display: flex;
+  justify-content: center;
+
+}
+
+.tab-container>Button {
+  margin: 0 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  background-color: transparent;
+  color: #ADADB0;
+  border-radius: 24px;
+  border: 2px solid #515259;
+  cursor: pointer;
+}
+
+.tab-container>Button.active-tab {
+  background-color: #BEE3F8;
+  color: #1A365D;
+  border-radius: 24px;
+  border-color: #3182CE;
+}
+
+.control-btn {
+  display: flex;
+  gap: 21px;
+  justify-content: center;
+  position: absolute;
+  top: 93%;
+}
+
+.timer-text {
+  text-align: center;
+  position: absolute;
+  top: 202px;
+  font-size: 55px;
+  font-weight: bold;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+}
+
+.pie-chart-container {
+  display: flex;
+  justify-content: center;
+  padding: 34px;
+}
+
+.control-btn button {
+  cursor: pointer;
+  border: none;
+  margin: 20px 0px 0px;
+  padding: 0px 12px;
+  border-radius: 100%;
+  font-family: sans-serif;
+  font-size: 18px;
+  height: 55px;
+  font-weight: bold;
+  width: 54px;
+  background-color: #2c2d35;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.App {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 576px) {
+
+  .App {
+    width: max-content;
+
+  }
+
+}
+
+
+.Todo-section {
+  background: #23242d;
+  border-radius: 8px;
+  width: 546px;
+  margin-right: auto;
+  margin-left: auto;
+  border: 1px solid #42424a;
+}
+
+.task-title {
+  display: flex;
+  justify-content: space-between;
+  color: white;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-bottom: 1px solid gray;
+}
+
+.add-button {
+  height: 46px;
+  width: 89px;
+  background: #14b270;
+  border: none;
+  color: white;
+  border-radius: 4px;
+}
+
+
+.todo-header {
+  display: flex;
+  color: white;
+  justify-content: space-between;
+  font-size: 18px;
+  border-bottom: 3px solid #44454c;
+  padding-left: 12px;
+}
+
+
+.task-display p {
+  color: #d3d3d5;
+  border-bottom: 1px dotted #42424a;
+  padding: 4px 18px 12px;
+  align-items: center;
+  gap: 17px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.add-task-section {
+  padding: 8px;
+}
+
+.add-task-content {
+  background: #1b1b22;
+  padding: 12px;
+  width: 486px;
+  margin-right: auto;
+  border: 1px solid #3f3f45;
+  margin-left: auto;
+}
+
+
+
+.add-task-content input {
+  background: #24242b;
+  border: 1px solid #3f3f45;
+  width: 463px;
+  padding: 10px;
+  color: white;
+}
+
+.add-btn {
+  border: none;
+  margin-left: 416px;
+  margin-top: 10px;
+  margin-top: 14px;
+  padding: 10px;
+  width: 70px;
+  background: #48bb78;
+  border-radius: 6px;
+  color: white;
+}
+
+
+.task-delete-btn {
+  width: 72px;
+  height: 32px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid #525257;
+  color: #88888c;
+}
+
+.delete-section {
+  width: 0;
+
+}
+
+
+
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px dotted #42424a;
+  align-items: center;
+}
+
+.task-contents {
+  display: flex;
+  gap: 14px;
+  width: 86%;
+
+}
+
+.task-text {
+  text-decoration: none;
+  color: rgb(211, 211, 213);
+  overflow: hidden;
+}
+
+.task-buttons {
+  margin-top: 3px;
+  color: #14b270;
+
+}
+
+.confirmation-message {
+  color: white;
+  text-align: center;
+  margin-top: 20px;
+}
+
+#my-tooltip {
+color: white;
+font-size: 14px;
+
+}
+.pie-chart-container:focus,
+.pie-chart-container *:focus
+ {
+  outline: none;
+  border: none;
+}
