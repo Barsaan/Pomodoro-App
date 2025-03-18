@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { FaCheckCircle, FaRegCircle } from "react-icons/fa";
+import { FaCheckCircle, FaRegCircle, FaTrash, FaSave } from "react-icons/fa";
+import { MdModeEdit, MdCancel } from "react-icons/md";
 
-// indexDb
+// IndexDB
 const getLocalStorage = () => {
   let tasks = localStorage.getItem("tasks");
   if (tasks) {
@@ -11,12 +12,14 @@ const getLocalStorage = () => {
   }
 };
 
-// todoList
+// TodoList
 const TodoList = () => {
   const [tasks, setTasks] = useState<{ text: string; completed: boolean }[]>(
     getLocalStorage()
   );
   const [newTask, setNewTask] = useState<string>("");
+  const [isEditing, setIsEditing] = useState<number | null>(null);
+  const [editTaskText, setEditTaskText] = useState<string>("");
 
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -51,6 +54,42 @@ const TodoList = () => {
     setTasks(updatedTasks);
   }
 
+  function handleEditInputChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setEditTaskText(event.target.value);
+  }
+
+  function handleEditKeyEnter(
+    event: React.KeyboardEvent<HTMLInputElement>,
+    index: number
+  ) {
+    if (event.key === "Enter") {
+      saveEditTask(index);
+    }
+  }
+
+  function startEditingTask(index: number) {
+    setIsEditing(index);
+    setEditTaskText(tasks[index].text);
+  }
+
+  function cancelEditing() {
+    setIsEditing(null);
+    setEditTaskText("");
+  }
+
+  function saveEditTask(index: number) {
+    if (editTaskText.trim() === "") {
+      deleteTask(index);
+    } else {
+      const updatedTasks = tasks.map((task, i) =>
+        i === index ? { ...task, text: editTaskText } : task
+      );
+      setTasks(updatedTasks);
+    }
+    setIsEditing(null);
+    setEditTaskText("");
+  }
+
   return (
     <div className="Todo-section">
       <div className="todo-contents">
@@ -64,25 +103,62 @@ const TodoList = () => {
               <div className="task-contents">
                 <div className="task-buttons">
                   {task.completed ? (
-                    <FaCheckCircle
-                      onClick={() => checkTaskCompletion(index)}
-                    />
+                    <FaCheckCircle onClick={() => checkTaskCompletion(index)} />
                   ) : (
                     <FaRegCircle onClick={() => checkTaskCompletion(index)} />
                   )}
                 </div>
-                <span
-                  className="task-text"
-                  style={{
-                    textDecoration: task.completed ? "line-through" : "none",
-                  }}
-                >
-                  {task.text}
-                </span>
+                {isEditing === index ? (
+                  <input
+                    type="text"
+                    value={editTaskText}
+                    onChange={handleEditInputChange}
+                    onKeyDown={(event) => handleEditKeyEnter(event, index)}
+                    className="task-input"
+                  />
+                ) : (
+                  <span
+                    className="task-text"
+                    style={{
+                      textDecoration: task.completed ? "line-through" : "none",
+                    }}
+                    onClick={() => checkTaskCompletion(index)}
+                  >
+                    {task.text}
+                  </span>
+                )}
               </div>
-              <button className="task-delete-btn" onClick={() => deleteTask(index)}>
-                Delete
-              </button>
+              {isEditing === index ? (
+                <>
+                  <button
+                    className="task-save-btn task-delete-btn"
+                    onClick={() => saveEditTask(index)}
+                  >
+                    <FaSave />
+                  </button>
+                  <button
+                    className="task-cancel-btn task-delete-btn"
+                    onClick={cancelEditing}
+                  >
+                    <MdCancel />
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    className="task-edit-btn task-delete-btn"
+                    onClick={() => startEditingTask(index)}
+                  >
+                    <MdModeEdit />
+                  </button>
+                  <button
+                    className="task-delete-btn trash-btn"
+                    onClick={() => deleteTask(index)}
+                  >
+                    <FaTrash />
+                  </button>
+                </>
+              )}
             </div>
           ))}
         </div>

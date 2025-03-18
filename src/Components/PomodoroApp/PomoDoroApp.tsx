@@ -1,18 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { VscDebugStart, VscDebugRestart } from "react-icons/vsc";
-import { FaRegCirclePause } from "react-icons/fa6";
+import { VscDebugRestart } from "react-icons/vsc";
+import { FaPause } from "react-icons/fa";
+import { FaClock, FaPlay } from "react-icons/fa6";
 import { PieChart, Pie, Cell } from "recharts";
 import TodoList from "../Todo/TodoList";
-import { Tooltip as ReactTooltip, Tooltip } from "react-tooltip";
+import { Tooltip as ReactTooltip } from "react-tooltip";
+import { IoSettingsOutline } from "react-icons/io5";
 
 const PomodoroApp = () => {
   const [activeTab, setActiveTab] = useState("pomodoro");
   const [seconds, setSeconds] = useState(1500);
   const [isActive, setIsActive] = useState(false);
 
-  const pomodoro = 1500;
-  const shortBreak = 300;
-  const longBreak = 900;
+  const [pomodoro, setPomodoro] = useState(1500);
+  const [shortBreak, setShortBreak] = useState(300);
+  const [longBreak, setLongBreak] = useState(900);
+
+  const [showSettings, setShowSettings] = useState(false);
+  const [pomodoroInput, setPomodoroInput] = useState(25);
+  const [shortBreakInput, setShortBreakInput] = useState(5);
+  const [longBreakInput, setLongBreakInput] = useState(15);
 
   useEffect(() => {
     let interval: string | number | NodeJS.Timeout | undefined;
@@ -21,13 +28,14 @@ const PomodoroApp = () => {
         setSeconds((prevSeconds) => prevSeconds - 1);
       }, 1000);
     } else if (seconds === 0) {
+      notific();
       resetTimer(activeTab);
     } else {
       clearInterval(interval);
     }
 
     return () => clearInterval(interval);
-  }, [isActive, seconds, activeTab]);
+  });
 
   useEffect(() => {
     const formattedTime = formatTime(seconds);
@@ -96,11 +104,107 @@ const PomodoroApp = () => {
     }
   };
 
+  const notific = () => {
+    if (Notification.permission === "granted") {
+      new Notification("Timer ended", {
+        body: "You completed a pomodoro",
+      });
+    } else if (Notification.permission !== "denied") {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          new Notification("Timer ended", {
+            body: "The time is up",
+            tag: "You completed a pomodoro",
+          });
+        }
+      });
+    }
+  };
+  const handleSettingsSave = () => {
+    const newPomodoro = pomodoroInput * 60;
+    const newShortBreak = shortBreakInput * 60;
+    const newLongBreak = longBreakInput * 60;
+
+    setPomodoro(newPomodoro);
+    setShortBreak(newShortBreak);
+    setLongBreak(newLongBreak);
+    localStorage.setItem("pomodoroTime", newPomodoro.toString());
+    localStorage.setItem("shortBreakTime", newShortBreak.toString());
+    localStorage.setItem("longBreakTime", newLongBreak.toString());
+
+    switch (activeTab) {
+      case "pomodoro":
+        setSeconds(newPomodoro);
+        break;
+      case "shortBreak":
+        setSeconds(newShortBreak);
+        break;
+      case "longBreak":
+        setSeconds(newLongBreak);
+        break;
+      default:
+        setSeconds(newPomodoro);
+    }
+    setShowSettings(false);
+  };
+
+  useEffect(() => {
+    // Load settings from local storage
+    const savedPomodoro = localStorage.getItem("pomodoroTime");
+    const savedShortBreak = localStorage.getItem("shortBreakTime");
+    const savedLongBreak = localStorage.getItem("longBreakTime");
+
+    if (savedPomodoro) {
+      setPomodoro(Number(savedPomodoro));
+    }
+    if (savedShortBreak) {
+      setShortBreak(Number(savedShortBreak));
+    }
+    if (savedLongBreak) {
+      setLongBreak(Number(savedLongBreak));
+    }
+
+    // Set the initial seconds based on the active tab
+    switch (activeTab) {
+      case "pomodoro":
+        setSeconds(savedPomodoro ? Number(savedPomodoro) : pomodoro);
+        break;
+      case "shortBreak":
+        setSeconds(savedShortBreak ? Number(savedShortBreak) : shortBreak);
+        break;
+      case "longBreak":
+        setSeconds(savedLongBreak ? Number(savedLongBreak) : longBreak);
+        break;
+      default:
+        setSeconds(pomodoro);
+    }
+  }, [activeTab, longBreak, pomodoro, shortBreak]);
+  useEffect(() => {
+    const savedPomodoro = localStorage.getItem("pomodoroTime");
+    const savedShortBreak = localStorage.getItem("shortBreakTime");
+    const savedLongBreak = localStorage.getItem("longBreakTime");
+
+    if (savedPomodoro) {
+      setPomodoroInput(Number(savedPomodoro) / 60);
+    }
+    if (savedShortBreak) {
+      setShortBreakInput(Number(savedShortBreak) / 60);
+    }
+    if (savedLongBreak) {
+      setLongBreakInput(Number(savedLongBreak) / 60);
+    }
+  }, []);
+
+  function handleKeyEnter(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === "Enter") {
+      handleSettingsSave();
+    }
+  }
   return (
     <div className="pomodoro-app">
       <div className="tab-container">
         <button
-          className={activeTab === "pomodoro" ? "active-tab" : ""}
+          className={activeTab === "pomodoro" ? "active-tab" : "button"}
           onClick={() => handleTabClick("pomodoro")}
           data-tooltip-id={
             isActive && activeTab !== "pomodoro" ? "my-tooltip" : ""
@@ -114,7 +218,7 @@ const PomodoroApp = () => {
           Pomodoro
         </button>
         <button
-          className={activeTab === "shortBreak" ? "active-tab" : ""}
+          className={activeTab === "shortBreak" ? "active-tab" : "button"}
           onClick={() => handleTabClick("shortBreak")}
           data-tooltip-id={
             isActive && activeTab !== "shortBreak" ? "my-tooltip" : ""
@@ -128,7 +232,9 @@ const PomodoroApp = () => {
           Short Break
         </button>
         <button
-          className={activeTab === "longBreak" ? "active-tab" : ""}
+          className={
+            activeTab === "longBreak" ? "active-tab" : "longBreakbutton"
+          }
           onClick={() => handleTabClick("longBreak")}
           data-tooltip-id={
             isActive && activeTab !== "longBreak" ? "my-tooltip" : ""
@@ -140,6 +246,13 @@ const PomodoroApp = () => {
           }
         >
           Long Break
+        </button>
+        <button
+          className="setting-btn "
+          type="button"
+          onClick={() => setShowSettings(true)}
+        >
+          <IoSettingsOutline />
         </button>
       </div>
 
@@ -183,10 +296,14 @@ const PomodoroApp = () => {
         <div className="timer-text">
           {formatTime(seconds)}
           <div className="control-btn">
-            <button onClick={handleStartPause}>
-              {isActive ? <FaRegCirclePause /> : <VscDebugStart />}
+            <button
+              id="pauseBtn"
+              className="pause-btn"
+              onClick={handleStartPause}
+            >
+              {isActive ? <FaPause /> : <FaPlay />}
             </button>
-            <button onClick={handleRestart}>
+            <button className="btn-restart" onClick={handleRestart}>
               <VscDebugRestart />
             </button>
           </div>
@@ -197,7 +314,78 @@ const PomodoroApp = () => {
           )}
         </div>
       </div>
+
       <TodoList />
+
+      {showSettings && (
+        <div className="modal">
+          <div className="modal-content">
+            <div>
+              <span className="close" onClick={() => setShowSettings(false)}>
+                &times;
+              </span>
+            </div>
+            <div className="setting-header-section">
+              <h2 className="setting-title">SETTING</h2>
+            </div>
+            <div className="setting-timer-subtitle">
+              <FaClock />
+              <p>TIMER</p>
+            </div>
+            <div className="set-timer-section">
+              <div className="set-timer-customize-section">
+                <p className="set-timer-title">Pomodoro</p>
+                <input
+                  min="1"
+                  max="999"
+                  className="set-timer-inp"
+                  value={pomodoroInput}
+                  onChange={(event) =>
+                    setPomodoroInput(Number(event.target.value))
+                  }
+                  onKeyDown={(event) => handleKeyEnter(event)}
+                  type="number"
+                />
+              </div>
+              <div className="set-timer-customize-section">
+                <p className="set-timer-title">Short Break</p>
+                <input
+                  min={1}
+                  max={999}
+                  className="set-timer-inp"
+                  value={shortBreakInput}
+                  onChange={(event) =>
+                    setShortBreakInput(Number(event.target.value))
+                  }
+                  onKeyDown={(event) => handleKeyEnter(event)}
+                  type="number"
+                />
+              </div>
+              <div className="set-timer-customize-section">
+                <p className="set-timer-title">Long Break</p>
+                <input
+                  min={1}
+                  max={999}
+                  className="set-timer-inp"
+                  value={longBreakInput}
+                  onChange={(event) =>
+                    setLongBreakInput(Number(event.target.value))
+                  }
+                  onKeyDown={(event) => handleKeyEnter(event)}
+                  type="number"
+                />
+              </div>
+            </div>
+            <button
+              className="setting-ok"
+              type="button"
+              onClick={handleSettingsSave}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
