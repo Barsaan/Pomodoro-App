@@ -26,7 +26,7 @@
     "saas": "^1.0.0",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4",
-    "homepage": "https://github.com/Barsaan/Pomodoro-App.git"
+    "homepage": "https://github.com/Barsaan/Pomodoro-App"
 
   },
   "scripts": {
