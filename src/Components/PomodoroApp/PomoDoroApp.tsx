@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { VscDebugRestart } from "react-icons/vsc";
-import { FaPause } from "react-icons/fa";
-import { FaClock, FaPlay } from "react-icons/fa6";
+import { FaClock, FaPlay, FaPause } from "react-icons/fa6";
 import { PieChart, Pie, Cell } from "recharts";
 import TodoList from "../Todo/TodoList";
 import { Tooltip as ReactTooltip } from "react-tooltip";

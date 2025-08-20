@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaCheckCircle, FaRegCircle, FaTrash, FaSave } from "react-icons/fa";
+import { FaRegCircle, FaTrash, FaFloppyDisk, FaCircleCheck } from "react-icons/fa6";
 import { MdModeEdit, MdCancel } from "react-icons/md";
 
 // IndexDB
@@ -103,7 +103,7 @@ const TodoList = () => {
               <div className="task-contents">
                 <div className="task-buttons">
                   {task.completed ? (
-                    <FaCheckCircle onClick={() => checkTaskCompletion(index)} />
+                    <FaCircleCheck onClick={() => checkTaskCompletion(index)} />
                   ) : (
                     <FaRegCircle onClick={() => checkTaskCompletion(index)} />
                   )}
@@ -134,7 +134,7 @@ const TodoList = () => {
                     className="task-save-btn task-delete-btn"
                     onClick={() => saveEditTask(index)}
                   >
-                    <FaSave />
+                    <FaFloppyDisk />
                   </button>
                   <button
                     className="task-cancel-btn task-delete-btn"
